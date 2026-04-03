@@ -75,8 +75,15 @@ Content-Type: `multipart/form-data`
 | "4" | L判 |
 | "5" | はがき |
 
-**注意**: iOS版はPDFをアップロードしている。content-typeはimage/jpeg限定とOpenAPIにあるが、
-iOS版の実際の挙動を確認すること。
+**サーバー側の対応Content-Type** (実装確認済み):
+- image/jpeg, image/jpg, application/pdf, image/png, image/tiff, application/octet-stream
+- OpenAPI仕様はJPEGのみ記載だが、実装は上記すべて受付
+- iOS版はPDFを送信 (fileName: "noshi.pdf", Content-Type: application/pdf)
+- Android版もPDFを送信する
+
+**用紙サイズ制限** (実装確認済み):
+- paperSize "4" (L判) および "6" (2L判) は JPEG/binary のみ対応（PDF不可）
+- 本アプリはA4/A3/B4のPDFなので該当しない
 
 レスポンス (waitForCompletion=true, 200):
 ```json
@@ -201,7 +208,19 @@ iOS版の実際の挙動を確認すること。
 | 504 | タイムアウト | リトライ |
 
 ## ポーリング戦略
-iOS版の実装: 3秒間隔、最大40回（120秒タイムアウト）
+
+### waitForCompletion=true（推奨）
+- サーバー側ポーリング: 1秒間隔、最大60回（60秒タイムアウト）
+- サーバーが完了を検知したら即座にprintId/accessKeyを返す
+- Android版はこちらを使用する（クライアント実装がシンプル）
+
+### waitForCompletion=false（クライアント側ポーリング）
+- iOS版の実装: 3秒間隔、最大40回（120秒タイムアウト）
+- サーバー側より長いタイムアウトでフォールバック
+
+### Android版方針
+- まず waitForCompletion=true でアップロード
+- 60秒以内に完了しない場合（タイムアウト）、sessionIdを使ってクライアント側ポーリングにフォールバック
 
 **iOS版ソース**: `FastNoshi/Services/NetPrintClient.swift`
 **APIサーバーソース**: `/Users/mi/Work/jp.marginalgains/namaeru-server/netprint-proxy/`
