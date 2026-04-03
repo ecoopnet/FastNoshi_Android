@@ -33,6 +33,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import jp.marginalgains.fastnoshi.ui.components.NoshiPrimaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiSecondaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
+import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 
 @Composable
 fun PrintScreen(
@@ -79,9 +80,12 @@ fun PrintScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(
+                    horizontal = NoshiSpacing.spacingLG,
+                    vertical = NoshiSpacing.spacingMD
+                )
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingLG),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (uiState.isUploading) {
