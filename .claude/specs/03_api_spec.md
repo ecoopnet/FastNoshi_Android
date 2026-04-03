@@ -8,8 +8,11 @@ Android アプリ → NPS Proxy → Fujifilm NetPrint API
 
 ### エンドポイント
 - **Production**: `https://fix.marginalgains.jp/nps` (release ビルド)
-- **Sandbox**: 別途設定 (debug ビルド)
+- **Sandbox**: `https://fix.marginalgains.jp/nps-s` (debug ビルド)
 - BuildConfig で切替
+
+### iOS版固定値
+- `npsUserIndex`: 3 (カラーモード制御等で使用するNPSアカウントIndex)
 
 ### 認証
 全リクエストに必須ヘッダー:
@@ -54,10 +57,11 @@ Content-Type: `multipart/form-data`
 パラメータ:
 | 名前 | 型 | 必須 | 説明 |
 |------|------|------|------|
-| file | Binary | ○ | JPEG画像 (image/jpeg) |
+| file | Binary | ○ | PDFファイル (application/pdf) ※iOS版はPDFを送信 |
 | paperSize | String | ○ | 用紙サイズコード |
+| colorMode | String | | "1"=カラー, "2"=白黒 |
 | fileName | String | | 元ファイル名 |
-| npsUserIndex | Int | | NPSユーザーIndex (default: 0) |
+| npsUserIndex | Int | | NPSユーザーIndex (iOS版は3固定) |
 | waitForCompletion | String | | "true"=サーバー側ポーリング (max 60s) |
 
 **用紙サイズコード**:
