@@ -38,3 +38,8 @@ val NoshiBackgroundDark = Color(0xFF1C1B1F)
 val NoshiOnBackgroundDark = Color(0xFFE6E1E5)
 val NoshiSurfaceDark = Color(0xFF1C1B1F)
 val NoshiOnSurfaceDark = Color(0xFFE6E1E5)
+
+// Shadow
+val NoshiShadowLight = Color.Black.copy(alpha = 0.06f)
+val NoshiShadowMedium = Color.Black.copy(alpha = 0.12f)
+val NoshiShadowStrong = Color.Black.copy(alpha = 0.18f)

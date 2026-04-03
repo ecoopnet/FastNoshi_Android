@@ -12,11 +12,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +41,8 @@ import jp.marginalgains.fastnoshi.rendering.NoshiRenderer
 import jp.marginalgains.fastnoshi.rendering.PaperSize
 import jp.marginalgains.fastnoshi.ui.components.NoshiPrimaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
+import jp.marginalgains.fastnoshi.ui.theme.NoshiRadius
+import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 
 private val PAPER_SIZES = listOf("A4", "B4", "A3")
 private const val MIN_FONT_SIZE = 12f
@@ -101,11 +107,11 @@ fun PreviewScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = NoshiSpacing.spacingMD)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingLG)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
 
             NoshiPreviewImage(bitmap = previewBitmap)
 
@@ -141,49 +147,67 @@ fun PreviewScreen(
                 onClick = viewModel::onRequestPrint
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingMD))
         }
     }
 }
 
 @Composable
 private fun NoshiPreviewImage(bitmap: Bitmap?) {
-    if (bitmap != null) {
-        Image(
-            bitmap = bitmap.asImageBitmap(),
-            contentDescription = "のし紙プレビュー",
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(297f / 210f),
-            contentScale = ContentScale.Fit
-        )
-    } else {
-        Text(
-            text = "プレビュー読み込み中...",
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(297f / 210f)
-                .padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(NoshiRadius.radiusMD),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = "のし紙プレビュー",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(297f / 210f),
+                contentScale = ContentScale.Fit
+            )
+        } else {
+            Text(
+                text = "プレビュー読み込み中...",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(297f / 210f)
+                    .padding(NoshiSpacing.spacingMD),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
 @Composable
 private fun PaperSizeSelector(selected: String, onChanged: (String) -> Unit) {
-    Column {
-        Text(text = "用紙サイズ", style = MaterialTheme.typography.titleSmall)
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(top = 4.dp)
-        ) {
-            PAPER_SIZES.forEach { size ->
-                FilterChip(
-                    selected = selected == size,
-                    onClick = { onChanged(size) },
-                    label = { Text(size) }
-                )
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(NoshiRadius.radiusMD),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(NoshiSpacing.spacingMD)) {
+            Text(
+                text = "用紙サイズ",
+                style = MaterialTheme.typography.titleSmall
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingSM),
+                modifier = Modifier.padding(top = NoshiSpacing.spacingSM)
+            ) {
+                PAPER_SIZES.forEach { size ->
+                    FilterChip(
+                        selected = selected == size,
+                        onClick = { onChanged(size) },
+                        label = { Text(size) }
+                    )
+                }
             }
         }
     }
@@ -191,18 +215,27 @@ private fun PaperSizeSelector(selected: String, onChanged: (String) -> Unit) {
 
 @Composable
 private fun FontSelector(selected: NoshiFontSet, onChanged: (NoshiFontSet) -> Unit) {
-    Column {
-        Text(text = "書体", style = MaterialTheme.typography.titleSmall)
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(top = 4.dp)
-        ) {
-            NoshiFontSet.all.forEach { fontSet ->
-                FilterChip(
-                    selected = selected.id == fontSet.id,
-                    onClick = { onChanged(fontSet) },
-                    label = { Text(fontSet.displayName) }
-                )
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(NoshiRadius.radiusMD),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(NoshiSpacing.spacingMD)) {
+            Text(text = "書体", style = MaterialTheme.typography.titleSmall)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingSM),
+                modifier = Modifier.padding(top = NoshiSpacing.spacingSM)
+            ) {
+                NoshiFontSet.all.forEach { fontSet ->
+                    FilterChip(
+                        selected = selected.id == fontSet.id,
+                        onClick = { onChanged(fontSet) },
+                        label = { Text(fontSet.displayName) }
+                    )
+                }
             }
         }
     }
@@ -210,49 +243,73 @@ private fun FontSelector(selected: NoshiFontSet, onChanged: (NoshiFontSet) -> Un
 
 @Composable
 private fun FontSizeSlider(label: String, value: Float, onChanged: (Float) -> Unit) {
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = label, style = MaterialTheme.typography.titleSmall)
-            Text(
-                text = "${value.toInt()}pt",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(NoshiRadius.radiusMD),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(NoshiSpacing.spacingMD)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = label, style = MaterialTheme.typography.titleSmall)
+                Text(
+                    text = "${value.toInt()}pt",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Slider(
+                value = value,
+                onValueChange = onChanged,
+                valueRange = MIN_FONT_SIZE..MAX_FONT_SIZE,
+                steps = ((MAX_FONT_SIZE - MIN_FONT_SIZE) / 2 - 1).toInt(),
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.secondary,
+                    activeTrackColor = MaterialTheme.colorScheme.secondary
+                )
             )
         }
-        Slider(
-            value = value,
-            onValueChange = onChanged,
-            valueRange = MIN_FONT_SIZE..MAX_FONT_SIZE,
-            steps = ((MAX_FONT_SIZE - MIN_FONT_SIZE) / 2 - 1).toInt()
-        )
     }
 }
 
 @Composable
 private fun PriceInfo(isColor: Boolean, price: Int) {
-    Row(
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        shape = RoundedCornerShape(NoshiRadius.radiusMD),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(NoshiSpacing.spacingMD),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "印刷料金",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = if (isColor) "カラー印刷" else "白黒印刷",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             Text(
-                text = "印刷料金",
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = if (isColor) "カラー印刷" else "白黒印刷",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "¥$price",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.primary
             )
         }
-        Text(
-            text = "¥$price",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.primary
-        )
     }
 }
