@@ -26,6 +26,9 @@
 -keep class dagger.hilt.** { *; }
 -keep class javax.inject.** { *; }
 
+# Domain models
+-keep class jp.marginalgains.fastnoshi.domain.model.** { *; }
+
 # API DTOs
 -keep class jp.marginalgains.fastnoshi.data.remote.dto.** { *; }
 

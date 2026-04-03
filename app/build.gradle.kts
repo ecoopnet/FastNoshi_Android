@@ -10,7 +10,7 @@ plugins {
 
 val localProperties = Properties().apply {
     val file = rootProject.file("local.properties")
-    if (file.exists()) load(file.inputStream())
+    if (file.exists()) file.inputStream().use { load(it) }
 }
 
 android {
@@ -35,7 +35,7 @@ android {
             buildConfigField(
                 "String",
                 "NPS_SERVICE_TOKEN",
-                "\"${localProperties.getProperty("nps.service.token.sandbox", "")}\""
+                "\"${localProperties.getProperty("NPS_DEBUG_TOKEN", "")}\""
             )
             isDebuggable = true
         }
@@ -44,7 +44,7 @@ android {
             buildConfigField(
                 "String",
                 "NPS_SERVICE_TOKEN",
-                "\"${localProperties.getProperty("nps.service.token.production", "")}\""
+                "\"${localProperties.getProperty("NPS_PROD_TOKEN", "")}\""
             )
             isMinifyEnabled = true
             isShrinkResources = true
