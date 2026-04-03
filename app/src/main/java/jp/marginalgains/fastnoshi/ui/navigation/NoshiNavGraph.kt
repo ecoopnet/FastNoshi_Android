@@ -11,11 +11,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import jp.marginalgains.fastnoshi.ui.expert.ExpertOmoteGakiScreen
+import jp.marginalgains.fastnoshi.ui.expert.TemplateSelectionScreen
 import jp.marginalgains.fastnoshi.ui.guide.MannersGuideScreen
 import jp.marginalgains.fastnoshi.ui.guidedflow.GuidedFlowScreen
 import jp.marginalgains.fastnoshi.ui.history.HistoryDetailScreen
 import jp.marginalgains.fastnoshi.ui.history.HistoryScreen
 import jp.marginalgains.fastnoshi.ui.home.HomeScreen
+import jp.marginalgains.fastnoshi.ui.input.TextInputScreen
 import jp.marginalgains.fastnoshi.ui.settings.SettingsScreen
 
 @Composable
@@ -45,15 +48,29 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
             )
         }
         composable(NoshiRoute.Expert.route) {
-            PlaceholderScreen("エキスパート")
+            TemplateSelectionScreen(
+                onNavigateToOmoteGaki = { templateId ->
+                    navController.navigate(
+                        NoshiRoute.ExpertOmoteGaki.createRoute(templateId)
+                    )
+                },
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(
             route = NoshiRoute.ExpertOmoteGaki.route,
             arguments = listOf(
                 navArgument("templateId") { type = NavType.StringType }
             )
-        ) {
-            PlaceholderScreen("エキスパート表書き")
+        ) { backStackEntry ->
+            val templateId = backStackEntry.arguments?.getString("templateId") ?: return@composable
+            ExpertOmoteGakiScreen(
+                templateId = templateId,
+                onNavigateToTextInput = { id, omoteGaki ->
+                    navController.navigate(NoshiRoute.TextInput.createRoute(id, omoteGaki))
+                },
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(
             route = NoshiRoute.TextInput.route,
@@ -61,8 +78,17 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
                 navArgument("templateId") { type = NavType.StringType },
                 navArgument("omoteGaki") { type = NavType.StringType }
             )
-        ) {
-            PlaceholderScreen("テキスト入力")
+        ) { backStackEntry ->
+            val templateId = backStackEntry.arguments?.getString("templateId") ?: return@composable
+            val omoteGaki = backStackEntry.arguments?.getString("omoteGaki") ?: return@composable
+            TextInputScreen(
+                templateId = templateId,
+                omoteGaki = omoteGaki,
+                onNavigateToPreview = { _, _, _ ->
+                    navController.navigate(NoshiRoute.Preview.route)
+                },
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(NoshiRoute.Preview.route) {
             PlaceholderScreen("プレビュー")
