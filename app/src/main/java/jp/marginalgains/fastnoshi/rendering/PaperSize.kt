@@ -8,11 +8,12 @@ enum class PaperSize(
     val widthMm: Float,
     val heightMm: Float,
     val displayName: String,
-    val description: String
+    val description: String,
+    val npsCode: String
 ) {
-    A4(297f, 210f, "A4", "小〜中サイズの贈り物に最適"),
-    A3(420f, 297f, "A3", "大サイズの贈り物に最適"),
-    B4(364f, 257f, "B4", "中〜大サイズの贈り物に最適");
+    A4(297f, 210f, "A4", "小〜中サイズの贈り物に最適", "0"),
+    A3(420f, 297f, "A3", "大サイズの贈り物に最適", "1"),
+    B4(364f, 257f, "B4", "中〜大サイズの贈り物に最適", "3");
 
     val widthPt: Float get() = widthMm * MM_TO_PT
     val heightPt: Float get() = heightMm * MM_TO_PT

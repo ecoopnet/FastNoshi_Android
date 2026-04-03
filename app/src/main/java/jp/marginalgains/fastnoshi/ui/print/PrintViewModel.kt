@@ -61,7 +61,7 @@ class PrintViewModel @Inject constructor(
         val paperSize = PaperSize.fromString(current.paperSize) ?: PaperSize.A4
         val fontSet = NoshiFontSet.findById(current.fontSetId) ?: NoshiFontSet.default
         val typeface = FontResolver.resolve(fontSet)
-        val colorMode = if (template.isColor) "color" else "bw"
+        val colorMode = if (template.isColor) "1" else "2"
 
         _uiState.value = current.copy(isUploading = true, errorMessage = null)
 
@@ -93,7 +93,7 @@ class PrintViewModel @Inject constructor(
 
                 val uploadResult = npsRepository.upload(
                     file = filePart,
-                    paperSize = current.paperSize,
+                    paperSize = paperSize.npsCode,
                     colorMode = colorMode,
                     fileName = fileName
                 )
