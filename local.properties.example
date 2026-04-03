@@ -1,0 +1,3 @@
+sdk.dir=/path/to/android/sdk
+NPS_DEBUG_TOKEN=your-sandbox-token
+NPS_PROD_TOKEN=your-production-token
