@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import jp.marginalgains.fastnoshi.ui.guidedflow.GuidedFlowScreen
 import jp.marginalgains.fastnoshi.ui.home.HomeScreen
 
 @Composable
@@ -30,7 +31,14 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
             )
         }
         composable(NoshiRoute.GuidedFlow.route) {
-            PlaceholderScreen("ガイドフロー")
+            GuidedFlowScreen(
+                onNavigateToTextInput = { templateId, omoteGaki ->
+                    navController.navigate(
+                        NoshiRoute.TextInput.createRoute(templateId, omoteGaki)
+                    )
+                },
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(NoshiRoute.Expert.route) {
             PlaceholderScreen("エキスパート")
