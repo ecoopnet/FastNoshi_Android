@@ -1,5 +1,6 @@
 package jp.marginalgains.fastnoshi.ui.input
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,12 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.RemoveCircle
+import androidx.compose.material3.Badge
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,10 +32,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jp.marginalgains.fastnoshi.ui.components.NoshiPrimaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
+import jp.marginalgains.fastnoshi.ui.theme.NoshiRadius
+import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 
 @Composable
 fun TextInputScreen(
@@ -61,9 +70,12 @@ fun TextInputScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(
+                    horizontal = NoshiSpacing.spacingLG,
+                    vertical = NoshiSpacing.spacingMD
+                )
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingLG)
         ) {
             OmoteGakiSection(
                 omoteGaki = uiState.omoteGaki,
@@ -78,41 +90,73 @@ fun TextInputScreen(
                 onRemoveName = viewModel::onRemoveName
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             NoshiPrimaryButton(
                 text = "プレビュー",
                 onClick = viewModel::onProceed,
                 enabled = uiState.canProceed
             )
+
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingMD))
         }
     }
 }
 
 @Composable
 private fun OmoteGakiSection(omoteGaki: String, onChanged: (String) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "表書き", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.width(8.dp))
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(NoshiRadius.radiusMD),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(NoshiSpacing.spacingMD),
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingMD)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "表書き",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.width(NoshiSpacing.spacingSM))
+                Badge(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = Color.White
+                ) {
+                    Text(
+                        text = "必須",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(
+                            horizontal = NoshiSpacing.spacingSM,
+                            vertical = 2.dp
+                        )
+                    )
+                }
+            }
+
+            OutlinedTextField(
+                value = omoteGaki,
+                onValueChange = onChanged,
+                placeholder = { Text("例: 御祝") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                shape = RoundedCornerShape(NoshiRadius.radiusSM)
+            )
+
             Text(
-                text = "必須",
+                text = "のし紙の上部に表示される用途を示すテキストです",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        OutlinedTextField(
-            value = omoteGaki,
-            onValueChange = onChanged,
-            placeholder = { Text("例: 御祝") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-        Text(
-            text = "のし紙の上部に表示される用途を示すテキストです",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 
@@ -124,66 +168,121 @@ private fun NameSection(
     onAddName: () -> Unit,
     onRemoveName: (Int) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "贈り主の名前", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "必須",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.error
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "${names.size} / 5名",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        names.forEachIndexed { index, name ->
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(NoshiRadius.radiusMD),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(NoshiSpacing.spacingMD),
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingMD)
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "${index + 1}",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.width(20.dp)
+                    text = "贈り主の名前",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { onNameChanged(index, it) },
-                    placeholder = { Text("名前を入力") },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true
-                )
-                if (names.size > 1) {
-                    IconButton(onClick = { onRemoveName(index) }) {
-                        Icon(
-                            imageVector = Icons.Default.RemoveCircle,
-                            contentDescription = "削除",
-                            tint = MaterialTheme.colorScheme.error
+                Spacer(modifier = Modifier.width(NoshiSpacing.spacingSM))
+                Badge(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = Color.White
+                ) {
+                    Text(
+                        text = "必須",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(
+                            horizontal = NoshiSpacing.spacingSM,
+                            vertical = 2.dp
                         )
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "${names.size} / 5名",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (names.size > 5) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                )
+            }
+
+            names.forEachIndexed { index, name ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = NoshiSpacing.spacingXS),
+                    horizontalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingSM)
+                ) {
+                    Text(
+                        text = "${index + 1}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.width(20.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { onNameChanged(index, it) },
+                        placeholder = { Text("名前を入力") },
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                        shape = RoundedCornerShape(NoshiRadius.radiusSM)
+                    )
+
+                    if (names.size > 1) {
+                        IconButton(
+                            onClick = { onRemoveName(index) },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.RemoveCircle,
+                                contentDescription = "削除",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        if (canAddName) {
-            IconButton(onClick = onAddName) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "名前を追加",
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            if (canAddName) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable { onAddName() }
+                        .padding(NoshiSpacing.spacingSM)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "名前を追加",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(NoshiSpacing.spacingSM))
+                    Text(
+                        text = "名前を追加",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
-        }
 
-        Text(
-            text = "のし紙の下部に表示される贈り主の名前です（受取人ではありません）",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+            Text(
+                text = "のし紙の下部に表示される贈り主の名前です（受取人ではありません）",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
