@@ -2,17 +2,15 @@ package jp.marginalgains.fastnoshi.rendering
 
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
-import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 import java.io.ByteArrayOutputStream
+import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 
 /**
  * のし紙PDF生成エンジン
  * android.graphics.pdf.PdfDocument でPDFを生成する。
  * 座標系: 72 DPI (1mm = 72/25.4 pt)
  */
-class NoshiPdfGenerator(
-    private val noshiRenderer: NoshiRenderer
-) {
+class NoshiPdfGenerator(private val noshiRenderer: NoshiRenderer) {
 
     companion object {
         private val A4_WIDTH_PT = PaperSize.A4.widthPt
@@ -37,7 +35,8 @@ class NoshiPdfGenerator(
         omoteGaki: String,
         names: List<String>,
         typeface: Typeface?,
-        fontSize: Float,
+        omoteGakiFontSize: Float,
+        nameFontSize: Float,
         paperSize: PaperSize
     ): ByteArray {
         val widthPt = paperSize.widthPt.toInt()
@@ -49,7 +48,13 @@ class NoshiPdfGenerator(
             val page = pdfDoc.startPage(pageInfo)
 
             val bitmap = noshiRenderer.renderToBitmap(
-                template, omoteGaki, names, typeface, fontSize, paperSize
+                template,
+                omoteGaki,
+                names,
+                typeface,
+                omoteGakiFontSize,
+                nameFontSize,
+                paperSize
             )
             page.canvas.drawBitmap(bitmap, 0f, 0f, null)
             bitmap.recycle()

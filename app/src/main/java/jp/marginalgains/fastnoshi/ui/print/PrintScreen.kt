@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import jp.marginalgains.fastnoshi.ui.components.NoshiPrimaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiSecondaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
@@ -45,7 +45,7 @@ fun PrintScreen(
     paperSize: String,
     onNavigateHome: () -> Unit,
     onBackClick: () -> Unit,
-    viewModel: PrintViewModel = viewModel()
+    viewModel: PrintViewModel = hiltViewModel()
 ) {
     LaunchedEffect(templateId) {
         viewModel.init(
@@ -105,10 +105,7 @@ fun PrintScreen(
 
                 NoshiPrimaryButton(
                     text = "印刷予約を送信",
-                    onClick = {
-                        viewModel.onUploadStarted()
-                        // TODO: NpsRepository.upload() を呼び出す（レンダリングエンジン統合後）
-                    }
+                    onClick = viewModel::onUploadAndPrint
                 )
             }
 

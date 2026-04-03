@@ -8,8 +8,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
-import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 import java.io.File
+import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 
 /**
  * のし紙レンダラー
@@ -35,7 +35,8 @@ class NoshiRenderer(
         omoteGaki: String,
         names: List<String>,
         typeface: Typeface?,
-        fontSize: Float,
+        omoteGakiFontSize: Float,
+        nameFontSize: Float,
         paperSize: PaperSize
     ): Bitmap {
         val widthPx = paperSize.widthPt.toInt()
@@ -52,16 +53,25 @@ class NoshiRenderer(
 
         // フォントサイズをスケーリング
         val scale = NoshiPdfGenerator.calculateScale(paperSize)
-        val scaledFontSize = fontSize * scale
+        val scaledOmoteGakiFontSize = omoteGakiFontSize * scale
+        val scaledNameFontSize = nameFontSize * scale
 
         // テキスト合成
         verticalTextRenderer.renderOmoteGaki(
-            canvas, omoteGaki, scaledFontSize,
-            widthPx.toFloat(), heightPx.toFloat(), typeface
+            canvas,
+            omoteGaki,
+            scaledOmoteGakiFontSize,
+            widthPx.toFloat(),
+            heightPx.toFloat(),
+            typeface
         )
         verticalTextRenderer.renderNames(
-            canvas, names, scaledFontSize,
-            widthPx.toFloat(), heightPx.toFloat(), typeface
+            canvas,
+            names,
+            scaledNameFontSize,
+            widthPx.toFloat(),
+            heightPx.toFloat(),
+            typeface
         )
 
         return bitmap
@@ -86,12 +96,11 @@ class NoshiRenderer(
     /**
      * assetsからテンプレートPNG画像を読み込む
      */
-    private fun loadTemplatePng(pngFileName: String): Bitmap? =
-        try {
-            context.assets.open("templates/$pngFileName").use { inputStream ->
-                BitmapFactory.decodeStream(inputStream)
-            }
-        } catch (_: Exception) {
-            null
+    private fun loadTemplatePng(pngFileName: String): Bitmap? = try {
+        context.assets.open("templates/$pngFileName").use { inputStream ->
+            BitmapFactory.decodeStream(inputStream)
         }
+    } catch (_: Exception) {
+        null
+    }
 }

@@ -1,5 +1,8 @@
 package jp.marginalgains.fastnoshi.ui.print
 
+import android.content.Context
+import io.mockk.mockk
+import jp.marginalgains.fastnoshi.data.repository.NpsRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -11,10 +14,12 @@ import org.junit.jupiter.api.Test
 class PrintViewModelTest {
 
     private lateinit var viewModel: PrintViewModel
+    private val mockContext: Context = mockk(relaxed = true)
+    private val mockNpsRepository: NpsRepository = mockk(relaxed = true)
 
     @BeforeEach
     fun setUp() {
-        viewModel = PrintViewModel()
+        viewModel = PrintViewModel(mockContext, mockNpsRepository)
         viewModel.init(
             templateId = "05_cho_red_on",
             omoteGaki = "御祝",
@@ -63,14 +68,20 @@ class PrintViewModelTest {
 
         @Test
         fun `予約番号をクリップボードにコピーできる`() {
-            viewModel.onPrintSuccess(printId = "ABC12345", expiresAt = "2026-04-10 23:59")
+            viewModel.onPrintSuccess(
+                printId = "ABC12345",
+                expiresAt = "2026-04-10 23:59"
+            )
             viewModel.onCopyPrintId()
             assertTrue(viewModel.uiState.value.showCopiedFeedback)
         }
 
         @Test
         fun `コピーフィードバック消費後にfalseに戻る`() {
-            viewModel.onPrintSuccess(printId = "ABC12345", expiresAt = "2026-04-10 23:59")
+            viewModel.onPrintSuccess(
+                printId = "ABC12345",
+                expiresAt = "2026-04-10 23:59"
+            )
             viewModel.onCopyPrintId()
             viewModel.onCopiedFeedbackConsumed()
             assertFalse(viewModel.uiState.value.showCopiedFeedback)
@@ -91,7 +102,10 @@ class PrintViewModelTest {
     inner class Navigation {
         @Test
         fun `ホームに戻るナビゲーション`() {
-            viewModel.onPrintSuccess(printId = "ABC12345", expiresAt = "2026-04-10 23:59")
+            viewModel.onPrintSuccess(
+                printId = "ABC12345",
+                expiresAt = "2026-04-10 23:59"
+            )
             viewModel.onNavigateHome()
             assertTrue(viewModel.uiState.value.navigateToHome)
         }

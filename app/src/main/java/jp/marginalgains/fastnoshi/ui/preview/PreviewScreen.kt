@@ -1,8 +1,8 @@
 package jp.marginalgains.fastnoshi.ui.preview
 
-import androidx.compose.foundation.background
+import android.graphics.Bitmap
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,11 +22,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jp.marginalgains.fastnoshi.domain.model.NoshiFontSet
+import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
+import jp.marginalgains.fastnoshi.rendering.FontResolver
+import jp.marginalgains.fastnoshi.rendering.NoshiRenderer
+import jp.marginalgains.fastnoshi.rendering.PaperSize
 import jp.marginalgains.fastnoshi.ui.components.NoshiPrimaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
 
@@ -43,11 +51,39 @@ fun PreviewScreen(
     onBackClick: () -> Unit,
     viewModel: PreviewViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+
     LaunchedEffect(templateId) {
         viewModel.init(templateId = templateId, omoteGaki = omoteGaki, names = names)
     }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    val previewBitmap by produceState<Bitmap?>(
+        initialValue = null,
+        uiState.templateId,
+        uiState.omoteGaki,
+        uiState.names,
+        uiState.selectedFontSet,
+        uiState.omoteGakiFontSize,
+        uiState.nameFontSize,
+        uiState.selectedPaperSize
+    ) {
+        val template = NoshiTemplate.findById(uiState.templateId) ?: return@produceState
+        val paperSize = PaperSize.fromString(uiState.selectedPaperSize)
+            ?: PaperSize.A4
+        val typeface = FontResolver.resolve(uiState.selectedFontSet)
+        val renderer = NoshiRenderer(context)
+        value = renderer.renderToBitmap(
+            template = template,
+            omoteGaki = uiState.omoteGaki,
+            names = uiState.names,
+            typeface = typeface,
+            omoteGakiFontSize = uiState.omoteGakiFontSize,
+            nameFontSize = uiState.nameFontSize,
+            paperSize = paperSize
+        )
+    }
 
     LaunchedEffect(uiState.navigateToPrint) {
         uiState.navigateToPrint?.let { nav ->
@@ -71,10 +107,7 @@ fun PreviewScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            NoshiPreviewPlaceholder(
-                omoteGaki = uiState.omoteGaki,
-                names = uiState.names
-            )
+            NoshiPreviewImage(bitmap = previewBitmap)
 
             PaperSizeSelector(
                 selected = uiState.selectedPaperSize,
@@ -114,26 +147,26 @@ fun PreviewScreen(
 }
 
 @Composable
-private fun NoshiPreviewPlaceholder(omoteGaki: String, names: List<String>) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(297f / 210f)
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = omoteGaki,
-                style = MaterialTheme.typography.headlineMedium
-            )
-            names.forEach { name ->
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-        }
+private fun NoshiPreviewImage(bitmap: Bitmap?) {
+    if (bitmap != null) {
+        Image(
+            bitmap = bitmap.asImageBitmap(),
+            contentDescription = "のし紙プレビュー",
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(297f / 210f),
+            contentScale = ContentScale.Fit
+        )
+    } else {
+        Text(
+            text = "プレビュー読み込み中...",
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(297f / 210f)
+                .padding(16.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
