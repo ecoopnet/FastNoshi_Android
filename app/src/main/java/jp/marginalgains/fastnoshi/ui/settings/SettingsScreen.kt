@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.marginalgains.fastnoshi.BuildConfig
 import jp.marginalgains.fastnoshi.domain.model.NoshiFontSet
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
+import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 
 @Composable
 fun SettingsScreen(
@@ -45,11 +46,11 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = NoshiSpacing.spacingMD)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingMD)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
 
             SettingsSection(title = "デフォルトフォント") {
                 NoshiFontSet.all.forEach { font ->
@@ -77,7 +78,7 @@ fun SettingsScreen(
                 InfoRow(label = "ビルド", value = BuildConfig.VERSION_CODE.toString())
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingMD))
         }
     }
 }
@@ -92,7 +93,7 @@ private fun SettingsSection(
             text = title,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = NoshiSpacing.spacingSM)
         )
         Card(
             modifier = Modifier.fillMaxWidth(),

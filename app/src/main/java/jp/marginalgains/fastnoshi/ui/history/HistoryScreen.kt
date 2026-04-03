@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -39,6 +40,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.marginalgains.fastnoshi.domain.model.NoshiPaper
 import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
+import jp.marginalgains.fastnoshi.ui.theme.NoshiRadius
+import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -54,7 +57,7 @@ fun HistoryScreen(
 
     Scaffold(
         topBar = {
-            NoshiTopBar(title = "作成履歴", onBackClick = onBackClick)
+            NoshiTopBar(title = "履歴", onBackClick = onBackClick)
         }
     ) { padding ->
         if (uiState.isEmpty) {
@@ -82,7 +85,7 @@ private fun EmptyHistoryContent(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
             Text(
                 text = "のし紙を作成すると、ここに表示されます",
                 style = MaterialTheme.typography.bodyMedium,
@@ -103,53 +106,56 @@ private fun HistoryListContent(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = NoshiSpacing.spacingMD),
+        verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingMD)
     ) {
         if (uiState.unprintedPapers.isNotEmpty()) {
             item {
-                SectionHeader("未印刷")
+                Text(
+                    text = "未印刷",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = NoshiSpacing.spacingSM)
+                )
             }
             items(uiState.unprintedPapers, key = { it.id }) { paper ->
-                SwipeToDeleteItem(
+                SwipeableHistoryItem(
                     paper = paper,
-                    onClick = { onPaperClick(paper.id) },
+                    onPaperClick = onPaperClick,
                     onDelete = { onDeletePaper(paper) }
                 )
             }
         }
+
         if (uiState.printedPapers.isNotEmpty()) {
             item {
-                Spacer(modifier = Modifier.height(8.dp))
-                SectionHeader("印刷済み")
+                Text(
+                    text = "印刷済み",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = NoshiSpacing.spacingSM)
+                )
             }
             items(uiState.printedPapers, key = { it.id }) { paper ->
-                SwipeToDeleteItem(
+                SwipeableHistoryItem(
                     paper = paper,
-                    onClick = { onPaperClick(paper.id) },
+                    onPaperClick = onPaperClick,
                     onDelete = { onDeletePaper(paper) }
                 )
             }
         }
-        item { Spacer(modifier = Modifier.height(16.dp)) }
-    }
-}
 
-@Composable
-private fun SectionHeader(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(vertical = 8.dp)
-    )
+        item {
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingMD))
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SwipeToDeleteItem(
+private fun SwipeableHistoryItem(
     paper: NoshiPaper,
-    onClick: () -> Unit,
+    onPaperClick: (String) -> Unit,
     onDelete: () -> Unit
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
@@ -176,7 +182,7 @@ private fun SwipeToDeleteItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color)
-                    .padding(end = 16.dp),
+                    .padding(end = NoshiSpacing.spacingMD),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
@@ -187,50 +193,46 @@ private fun SwipeToDeleteItem(
             }
         }
     ) {
-        HistoryItemCard(paper = paper, onClick = onClick)
-    }
-}
-
-@Composable
-private fun HistoryItemCard(paper: NoshiPaper, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onPaperClick(paper.id) },
+            shape = RoundedCornerShape(NoshiRadius.radiusMD),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(NoshiSpacing.spacingMD),
+                verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingXS)
             ) {
-                Text(
-                    text = paper.omoteGaki,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = NoshiTemplate.findById(paper.templateId)?.name ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = paper.omoteGaki,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = NoshiTemplate.findById(paper.templateId)?.name ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 Text(
                     text = paper.names.joinToString("、"),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = formatDate(paper.createdAt),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
             }
         }

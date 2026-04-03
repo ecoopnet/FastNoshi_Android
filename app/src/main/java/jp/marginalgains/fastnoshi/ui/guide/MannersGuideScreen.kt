@@ -7,18 +7,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
+import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 
 @Composable
 fun MannersGuideScreen(onBackClick: () -> Unit) {
@@ -31,11 +39,38 @@ fun MannersGuideScreen(onBackClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = NoshiSpacing.spacingMD)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingLG)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
+
+            // ヘッダーセクション
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingSM)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.MenuBook,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = "のしのマナーガイド",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "のし紙は用途に応じて水引の種類が異なります。\n間違えると失礼にあたるため、適切なテンプレートを選びましょう。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
 
             GuideIntroSection()
 
@@ -45,7 +80,7 @@ fun MannersGuideScreen(onBackClick: () -> Unit) {
 
             NameWritingGuideSection()
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingMD))
         }
     }
 }
@@ -58,13 +93,13 @@ private fun GuideIntroSection() {
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(NoshiSpacing.spacingMD)) {
             Text(
                 text = "のし紙の選び方",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
             Text(
                 text = "のし紙は用途に応じて水引の種類が異なります。" +
                     "間違えると失礼にあたるため、適切なテンプレートを選びましょう。",
@@ -84,30 +119,30 @@ private fun TemplateGuideCard(template: NoshiTemplate) {
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(NoshiSpacing.spacingMD)) {
             Text(
                 text = template.name,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingXS))
             Text(
                 text = template.description,
                 style = MaterialTheme.typography.bodyMedium
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
             Text(
                 text = "印刷: ${if (template.isColor) "カラー（¥200）" else "白黒（¥100）"}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
             Text(
                 text = "代表的な表書き",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingXS))
             Text(
                 text = template.omoteGakiCandidates.joinToString("、"),
                 style = MaterialTheme.typography.bodyMedium
@@ -125,13 +160,13 @@ private fun NameWritingGuideSection() {
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(NoshiSpacing.spacingMD)) {
             Text(
                 text = "名前の書き方",
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
             Text(
                 text = "・個人名：フルネームを1名記入\n" +
                     "・連名（2〜3名）：右から目上の方の順に記入\n" +
