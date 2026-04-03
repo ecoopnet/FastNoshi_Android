@@ -1,0 +1,8 @@
+# プロジェクト規約はリポジトリに含める
+!.claude/
+!.claude/CLAUDE.md
+!.claude/blames.yml
+!.claude/specs/
+!.claude/team/
+# ただしローカル設定は除外
+.claude/settings.local.json

@@ -1,0 +1,35 @@
+# 禁止事項・指摘履歴
+# ユーザーに指摘を受けたら追記する
+
+rules:
+  - id: no-external-edit
+    description: "Android プロジェクトフォルダ以外のファイル操作禁止（参照のみ許可）"
+    severity: critical
+
+  - id: no-main-direct
+    description: "main ブランチへの直接コミット禁止"
+    severity: critical
+
+  - id: test-first
+    description: "テストを先に書く。実装からはじめない"
+    severity: high
+
+  - id: no-duplicate-code
+    description: "重複コード禁止。共通化を徹底する"
+    severity: high
+
+  - id: ktlint-pass
+    description: "ktlint を通さずにコミットしない"
+    severity: high
+
+  - id: no-hardcoded-secrets
+    description: "API キーやシークレットをハードコードしない"
+    severity: critical
+
+  - id: spec-before-impl
+    description: "仕様書に落とし込んでから実装する"
+    severity: high
+
+  - id: ask-for-big-decisions
+    description: "大きな判断は社長に確認。軽微な対応は事後報告"
+    severity: medium
