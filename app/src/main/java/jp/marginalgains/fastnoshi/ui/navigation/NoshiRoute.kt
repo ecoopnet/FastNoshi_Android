@@ -10,8 +10,29 @@ sealed class NoshiRoute(val route: String) {
     data object TextInput : NoshiRoute("textInput/{templateId}/{omoteGaki}") {
         fun createRoute(templateId: String, omoteGaki: String) = "textInput/$templateId/$omoteGaki"
     }
-    data object Preview : NoshiRoute("preview")
-    data object Print : NoshiRoute("print")
+    data object Preview : NoshiRoute("preview/{templateId}/{omoteGaki}/{names}") {
+        fun createRoute(templateId: String, omoteGaki: String, names: List<String>): String {
+            val namesParam = names.joinToString(",")
+            return "preview/$templateId/$omoteGaki/$namesParam"
+        }
+    }
+    data object Print : NoshiRoute(
+        "print/{templateId}/{omoteGaki}/{names}/{fontSetId}/{omoteGakiFontSize}/{nameFontSize}/{paperSize}"
+    ) {
+        fun createRoute(
+            templateId: String,
+            omoteGaki: String,
+            names: List<String>,
+            fontSetId: String,
+            omoteGakiFontSize: Float,
+            nameFontSize: Float,
+            paperSize: String
+        ): String {
+            val namesParam = names.joinToString(",")
+            return "print/$templateId/$omoteGaki/$namesParam/" +
+                "$fontSetId/$omoteGakiFontSize/$nameFontSize/$paperSize"
+        }
+    }
     data object Result : NoshiRoute("result")
     data object MannersGuide : NoshiRoute("mannersGuide")
     data object History : NoshiRoute("history")

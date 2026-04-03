@@ -11,8 +11,9 @@ Android アプリ → NPS Proxy → Fujifilm NetPrint API
 - **Sandbox**: `https://fix.marginalgains.jp/nps-s` (debug ビルド)
 - BuildConfig で切替
 
-### iOS版固定値
-- `npsUserIndex`: 3 (カラーモード制御等で使用するNPSアカウントIndex)
+### npsUserIndex
+- **Android版**: `4` (社長指示により設定)
+- iOS版は `3` を使用（別アカウント）
 
 ### 認証
 全リクエストに必須ヘッダー:
