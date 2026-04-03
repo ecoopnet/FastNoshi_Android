@@ -12,12 +12,10 @@
 -dontwarn okhttp3.**
 -dontwarn okio.**
 
-# Gson
--keepattributes Signature
--keep class com.google.gson.** { *; }
--keep class * implements com.google.gson.TypeAdapterFactory
--keep class * implements com.google.gson.JsonSerializer
--keep class * implements com.google.gson.JsonDeserializer
+# Moshi
+-keep class com.squareup.moshi.** { *; }
+-keep @com.squareup.moshi.JsonQualifier interface *
+-keepclassmembers @com.squareup.moshi.JsonClass class * { *; }
 
 # Room
 -keep class * extends androidx.room.RoomDatabase
