@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import jp.marginalgains.fastnoshi.ui.home.HomeScreen
 
 @Composable
 fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -20,7 +21,13 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
         modifier = modifier
     ) {
         composable(NoshiRoute.Home.route) {
-            PlaceholderScreen("ホーム")
+            HomeScreen(
+                onGuidedFlowClick = { navController.navigate(NoshiRoute.GuidedFlow.route) },
+                onExpertClick = { navController.navigate(NoshiRoute.Expert.route) },
+                onMannersGuideClick = { navController.navigate(NoshiRoute.MannersGuide.route) },
+                onHistoryClick = { navController.navigate(NoshiRoute.History.route) },
+                onSettingsClick = { navController.navigate(NoshiRoute.Settings.route) }
+            )
         }
         composable(NoshiRoute.GuidedFlow.route) {
             PlaceholderScreen("ガイドフロー")
