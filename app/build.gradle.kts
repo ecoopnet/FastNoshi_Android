@@ -1,9 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.room)
+}
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) load(file.inputStream())
 }
 
 android {
@@ -17,16 +24,28 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
+        buildConfigField("String", "NPS_APP_NAME", "\"fastnoshi\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
             buildConfigField("String", "NPS_BASE_URL", "\"https://fix.marginalgains.jp/nps-s\"")
+            buildConfigField(
+                "String",
+                "NPS_SERVICE_TOKEN",
+                "\"${localProperties.getProperty("nps.service.token.sandbox", "")}\""
+            )
             isDebuggable = true
         }
         release {
             buildConfigField("String", "NPS_BASE_URL", "\"https://fix.marginalgains.jp/nps\"")
+            buildConfigField(
+                "String",
+                "NPS_SERVICE_TOKEN",
+                "\"${localProperties.getProperty("nps.service.token.production", "")}\""
+            )
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -89,9 +108,11 @@ dependencies {
 
     // Network
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.converter.moshi)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.moshi)
+    ksp(libs.moshi.kotlin.codegen)
 
     // Room
     implementation(libs.room.runtime)

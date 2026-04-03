@@ -1,0 +1,8 @@
+# Android SDK パス
+sdk.dir=/path/to/Android/sdk
+
+# NPS API サービストークン
+# sandbox (debug ビルド用)
+nps.service.token.sandbox=YOUR_SANDBOX_TOKEN_HERE
+# production (release ビルド用)
+nps.service.token.production=YOUR_PRODUCTION_TOKEN_HERE
