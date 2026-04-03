@@ -1,4 +1,33 @@
-# プロジェクト規約はリポジトリに含める
+# Android / Gradle
+*.iml
+.gradle/
+/local.properties
+.idea/
+*.apk
+*.aab
+*.ap_
+*.dex
+/build/
+/app/build/
+/captures
+.externalNativeBuild/
+.cxx/
+*.hprof
+/app/schemas/
+
+# Gradle wrapper jar (download on build)
+gradle/wrapper/gradle-wrapper.jar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.jks
+*.keystore
+local.properties
+
+# Claude - プロジェクト規約はリポジトリに含める
 !.claude/
 !.claude/CLAUDE.md
 !.claude/blames.yml
