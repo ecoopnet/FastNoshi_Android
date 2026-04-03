@@ -100,7 +100,7 @@ fun SettingsScreen(
                         uriHandler.openUri(
                             "https://docs.google.com/forms/d/e/" +
                                 "1FAIpQLScyI2EONzFEEWhxKhg4sR90Z__hZ5sgFbLeLLquExzsCmbosA" +
-                                "/viewform?usp=dialog"
+                                "/viewform"
                         )
                     }
                 )
