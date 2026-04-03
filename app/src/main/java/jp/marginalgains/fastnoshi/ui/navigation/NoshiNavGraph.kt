@@ -19,6 +19,8 @@ import jp.marginalgains.fastnoshi.ui.history.HistoryDetailScreen
 import jp.marginalgains.fastnoshi.ui.history.HistoryScreen
 import jp.marginalgains.fastnoshi.ui.home.HomeScreen
 import jp.marginalgains.fastnoshi.ui.input.TextInputScreen
+import jp.marginalgains.fastnoshi.ui.preview.PreviewScreen
+import jp.marginalgains.fastnoshi.ui.print.PrintScreen
 import jp.marginalgains.fastnoshi.ui.settings.SettingsScreen
 
 @Composable
@@ -84,17 +86,78 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
             TextInputScreen(
                 templateId = templateId,
                 omoteGaki = omoteGaki,
-                onNavigateToPreview = { _, _, _ ->
-                    navController.navigate(NoshiRoute.Preview.route)
+                onNavigateToPreview = { tId, og, names ->
+                    navController.navigate(NoshiRoute.Preview.createRoute(tId, og, names))
                 },
                 onBackClick = { navController.popBackStack() }
             )
         }
-        composable(NoshiRoute.Preview.route) {
-            PlaceholderScreen("プレビュー")
+        composable(
+            route = NoshiRoute.Preview.route,
+            arguments = listOf(
+                navArgument("templateId") { type = NavType.StringType },
+                navArgument("omoteGaki") { type = NavType.StringType },
+                navArgument("names") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val templateId = backStackEntry.arguments?.getString("templateId") ?: return@composable
+            val omoteGaki = backStackEntry.arguments?.getString("omoteGaki") ?: return@composable
+            val namesStr = backStackEntry.arguments?.getString("names") ?: return@composable
+            val names = namesStr.split(",").filter { it.isNotEmpty() }
+            PreviewScreen(
+                templateId = templateId,
+                omoteGaki = omoteGaki,
+                names = names,
+                onNavigateToPrint = { nav ->
+                    navController.navigate(
+                        NoshiRoute.Print.createRoute(
+                            nav.templateId,
+                            nav.omoteGaki,
+                            nav.names,
+                            nav.fontSetId,
+                            nav.omoteGakiFontSize,
+                            nav.nameFontSize,
+                            nav.paperSize
+                        )
+                    )
+                },
+                onBackClick = { navController.popBackStack() }
+            )
         }
-        composable(NoshiRoute.Print.route) {
-            PlaceholderScreen("印刷")
+        composable(
+            route = NoshiRoute.Print.route,
+            arguments = listOf(
+                navArgument("templateId") { type = NavType.StringType },
+                navArgument("omoteGaki") { type = NavType.StringType },
+                navArgument("names") { type = NavType.StringType },
+                navArgument("fontSetId") { type = NavType.StringType },
+                navArgument("omoteGakiFontSize") { type = NavType.StringType },
+                navArgument("nameFontSize") { type = NavType.StringType },
+                navArgument("paperSize") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments ?: return@composable
+            val templateId = args.getString("templateId") ?: return@composable
+            val omoteGaki = args.getString("omoteGaki") ?: return@composable
+            val namesStr = args.getString("names") ?: return@composable
+            val names = namesStr.split(",").filter { it.isNotEmpty() }
+            val fontSetId = args.getString("fontSetId") ?: "mincho"
+            val omoteGakiFontSize = args.getString("omoteGakiFontSize")?.toFloatOrNull() ?: 28f
+            val nameFontSize = args.getString("nameFontSize")?.toFloatOrNull() ?: 24f
+            val paperSize = args.getString("paperSize") ?: "A4"
+            PrintScreen(
+                templateId = templateId,
+                omoteGaki = omoteGaki,
+                names = names,
+                fontSetId = fontSetId,
+                omoteGakiFontSize = omoteGakiFontSize,
+                nameFontSize = nameFontSize,
+                paperSize = paperSize,
+                onNavigateHome = {
+                    navController.popBackStack(NoshiRoute.Home.route, inclusive = false)
+                },
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(NoshiRoute.Result.route) {
             PlaceholderScreen("結果")
