@@ -38,3 +38,8 @@ rules:
     description: "APIに送るコード値(paperSize='0',colorMode='1'等)はenumで型安全に管理する。display名やString直書きで送らない。iOS版のenum/computed propertyに対応するKotlin enumを必ず作る"
     severity: critical
     incident: "2026-04-03: paperSize='A4'/colorMode='color'を送って400エラー。正しくは'0'/'1'"
+
+  - id: retrofit-multipart-no-json-encode
+    description: "Retrofitのmultipart uploadで@Part('name')にString/Intを渡すとMoshiがJSON encodeする(クォート付き)。MultipartBody.Part.createFormData()を使ってプレーンテキストで送ること"
+    severity: critical
+    incident: "2026-04-03: multipartパラメータがJSON encode('0'がクォート付き)でNPS APIが401返却"
