@@ -39,7 +39,14 @@ class NpsRepository @Inject constructor(private val api: NpsApiService) {
         npsUserIndex: Int = DEFAULT_NPS_USER_INDEX,
         waitForCompletion: String = "true"
     ): Result<UploadResponseDto> = runCatching {
-        api.upload(file, paperSize, colorMode, fileName, npsUserIndex, waitForCompletion)
+        api.upload(
+            file = file,
+            paperSize = NpsApiService.textPart("paperSize", paperSize),
+            colorMode = NpsApiService.textPart("colorMode", colorMode),
+            fileName = NpsApiService.textPart("fileName", fileName),
+            npsUserIndex = NpsApiService.textPart("npsUserIndex", npsUserIndex),
+            waitForCompletion = NpsApiService.textPart("waitForCompletion", waitForCompletion)
+        )
     }
 
     suspend fun checkStatus(sessionId: String, npsUserIndex: Int = DEFAULT_NPS_USER_INDEX): Result<StatusResponseDto> =

@@ -103,11 +103,11 @@ class NpsApiServiceTest {
             val filePart = MultipartBody.Part.createFormData("file", "noshi.pdf", pdfBody)
             val response = api.upload(
                 file = filePart,
-                paperSize = "0",
-                colorMode = "1",
-                fileName = "noshi.pdf",
-                npsUserIndex = 3,
-                waitForCompletion = "true"
+                paperSize = NpsApiService.textPart("paperSize", "0"),
+                colorMode = NpsApiService.textPart("colorMode", "1"),
+                fileName = NpsApiService.textPart("fileName", "noshi.pdf"),
+                npsUserIndex = NpsApiService.textPart("npsUserIndex", 3),
+                waitForCompletion = NpsApiService.textPart("waitForCompletion", "true")
             )
             val request = server.takeRequest()
 

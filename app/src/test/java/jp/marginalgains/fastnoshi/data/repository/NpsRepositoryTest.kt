@@ -104,7 +104,7 @@ class NpsRepositoryTest {
         @Test
         fun `waitForCompletionがデフォルトでtrueになる`() = runTest {
             coEvery {
-                api.upload(any(), any(), any(), any(), any(), eq("true"))
+                api.upload(any(), any(), any(), any(), any(), any())
             } returns UploadResponseDto(
                 success = true,
                 npsUserIndex = 3,

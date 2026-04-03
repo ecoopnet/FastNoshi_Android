@@ -11,7 +11,10 @@ import jp.marginalgains.fastnoshi.data.remote.dto.StatusResponseDto
 import jp.marginalgains.fastnoshi.data.remote.dto.ThumbnailRequestDto
 import jp.marginalgains.fastnoshi.data.remote.dto.ThumbnailResponseDto
 import jp.marginalgains.fastnoshi.data.remote.dto.UploadResponseDto
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -19,6 +22,15 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface NpsApiService {
+
+    companion object {
+        /** multipart text partを作成（JSON encodingを避ける） */
+        fun textPart(name: String, value: String): MultipartBody.Part =
+            MultipartBody.Part.createFormData(name, value)
+
+        fun textPart(name: String, value: Int): MultipartBody.Part =
+            MultipartBody.Part.createFormData(name, value.toString())
+    }
 
     @GET("api/v1/health")
     suspend fun health(): HealthResponseDto
@@ -30,11 +42,11 @@ interface NpsApiService {
     @POST("api/v1/nps/upload")
     suspend fun upload(
         @Part file: MultipartBody.Part,
-        @Part("paperSize") paperSize: String,
-        @Part("colorMode") colorMode: String,
-        @Part("fileName") fileName: String,
-        @Part("npsUserIndex") npsUserIndex: Int,
-        @Part("waitForCompletion") waitForCompletion: String
+        @Part paperSize: MultipartBody.Part,
+        @Part colorMode: MultipartBody.Part,
+        @Part fileName: MultipartBody.Part,
+        @Part npsUserIndex: MultipartBody.Part,
+        @Part waitForCompletion: MultipartBody.Part
     ): UploadResponseDto
 
     @POST("api/v1/nps/status")
