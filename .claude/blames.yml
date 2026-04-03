@@ -33,3 +33,8 @@ rules:
   - id: ask-for-big-decisions
     description: "大きな判断は社長に確認。軽微な対応は事後報告"
     severity: medium
+
+  - id: api-code-values-in-enum
+    description: "APIに送るコード値(paperSize='0',colorMode='1'等)はenumで型安全に管理する。display名やString直書きで送らない。iOS版のenum/computed propertyに対応するKotlin enumを必ず作る"
+    severity: critical
+    incident: "2026-04-03: paperSize='A4'/colorMode='color'を送って400エラー。正しくは'0'/'1'"

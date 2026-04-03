@@ -9,6 +9,7 @@ import javax.inject.Inject
 import jp.marginalgains.fastnoshi.data.repository.NpsRepository
 import jp.marginalgains.fastnoshi.domain.model.NoshiFontSet
 import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
+import jp.marginalgains.fastnoshi.domain.model.NpsColorMode
 import jp.marginalgains.fastnoshi.rendering.FontResolver
 import jp.marginalgains.fastnoshi.rendering.NoshiPdfGenerator
 import jp.marginalgains.fastnoshi.rendering.NoshiRenderer
@@ -61,7 +62,7 @@ class PrintViewModel @Inject constructor(
         val paperSize = PaperSize.fromString(current.paperSize) ?: PaperSize.A4
         val fontSet = NoshiFontSet.findById(current.fontSetId) ?: NoshiFontSet.default
         val typeface = FontResolver.resolve(fontSet)
-        val colorMode = if (template.isColor) "1" else "2"
+        val colorMode = NpsColorMode.fromTemplate(template)
 
         _uiState.value = current.copy(isUploading = true, errorMessage = null)
 
@@ -94,7 +95,7 @@ class PrintViewModel @Inject constructor(
                 val uploadResult = npsRepository.upload(
                     file = filePart,
                     paperSize = paperSize.npsCode,
-                    colorMode = colorMode,
+                    colorMode = colorMode.code,
                     fileName = fileName
                 )
 
