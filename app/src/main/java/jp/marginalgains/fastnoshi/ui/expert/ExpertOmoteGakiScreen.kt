@@ -19,11 +19,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 import jp.marginalgains.fastnoshi.ui.components.NoshiChoiceButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiPrimaryButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
+import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 
 @Composable
 fun ExpertOmoteGakiScreen(
@@ -43,9 +43,9 @@ fun ExpertOmoteGakiScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = NoshiSpacing.spacingLG, vertical = NoshiSpacing.spacingMD)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingMD)
         ) {
             Text(text = template.name, style = MaterialTheme.typography.titleMedium)
             Text(
@@ -54,7 +54,7 @@ fun ExpertOmoteGakiScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
 
             Text(
                 text = "おすすめの表書きはこちらになります。選んでください",
@@ -68,7 +68,7 @@ fun ExpertOmoteGakiScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingMD))
 
             Text(text = "または自由に入力", style = MaterialTheme.typography.titleSmall)
             OutlinedTextField(
@@ -84,7 +84,7 @@ fun ExpertOmoteGakiScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
 
             NoshiPrimaryButton(
                 text = "次へ（名前入力）",

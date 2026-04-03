@@ -1,10 +1,27 @@
 package jp.marginalgains.fastnoshi.ui.navigation
 
+import android.net.Uri
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class NoshiRouteTest {
+
+    @BeforeEach
+    fun setUp() {
+        mockkStatic(Uri::class)
+        every { Uri.encode(any()) } answers { firstArg<String>() }
+    }
+
+    @AfterEach
+    fun tearDown() {
+        unmockkStatic(Uri::class)
+    }
 
     @Test
     fun `全ルートが一意である`() {
@@ -16,7 +33,6 @@ class NoshiRouteTest {
             NoshiRoute.TextInput,
             NoshiRoute.Preview,
             NoshiRoute.Print,
-            NoshiRoute.Result,
             NoshiRoute.MannersGuide,
             NoshiRoute.History,
             NoshiRoute.HistoryDetail,
@@ -27,7 +43,7 @@ class NoshiRouteTest {
     }
 
     @Test
-    fun `全画面分のルートが12個定義されている`() {
+    fun `全画面分のルートが11個定義されている`() {
         val routes = listOf(
             NoshiRoute.Home,
             NoshiRoute.GuidedFlow,
@@ -36,13 +52,12 @@ class NoshiRouteTest {
             NoshiRoute.TextInput,
             NoshiRoute.Preview,
             NoshiRoute.Print,
-            NoshiRoute.Result,
             NoshiRoute.MannersGuide,
             NoshiRoute.History,
             NoshiRoute.HistoryDetail,
             NoshiRoute.Settings
         )
-        assertEquals(12, routes.size)
+        assertEquals(11, routes.size)
     }
 
     @Test

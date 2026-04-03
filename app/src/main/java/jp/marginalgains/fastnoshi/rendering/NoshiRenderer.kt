@@ -6,9 +6,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.pdf.PdfRenderer
-import android.os.ParcelFileDescriptor
-import java.io.File
 import jp.marginalgains.fastnoshi.domain.model.NoshiTemplate
 
 /**

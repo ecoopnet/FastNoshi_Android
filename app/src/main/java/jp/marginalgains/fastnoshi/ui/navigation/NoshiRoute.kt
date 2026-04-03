@@ -1,19 +1,22 @@
 package jp.marginalgains.fastnoshi.ui.navigation
 
+import android.net.Uri
+
 sealed class NoshiRoute(val route: String) {
     data object Home : NoshiRoute("home")
     data object GuidedFlow : NoshiRoute("guidedFlow")
     data object Expert : NoshiRoute("expert")
     data object ExpertOmoteGaki : NoshiRoute("expertOmoteGaki/{templateId}") {
-        fun createRoute(templateId: String) = "expertOmoteGaki/$templateId"
+        fun createRoute(templateId: String) = "expertOmoteGaki/${Uri.encode(templateId)}"
     }
     data object TextInput : NoshiRoute("textInput/{templateId}/{omoteGaki}") {
-        fun createRoute(templateId: String, omoteGaki: String) = "textInput/$templateId/$omoteGaki"
+        fun createRoute(templateId: String, omoteGaki: String) =
+            "textInput/${Uri.encode(templateId)}/${Uri.encode(omoteGaki)}"
     }
     data object Preview : NoshiRoute("preview/{templateId}/{omoteGaki}/{names}") {
         fun createRoute(templateId: String, omoteGaki: String, names: List<String>): String {
             val namesParam = names.joinToString(",")
-            return "preview/$templateId/$omoteGaki/$namesParam"
+            return "preview/${Uri.encode(templateId)}/${Uri.encode(omoteGaki)}/${Uri.encode(namesParam)}"
         }
     }
     data object Print : NoshiRoute(
@@ -29,15 +32,14 @@ sealed class NoshiRoute(val route: String) {
             paperSize: String
         ): String {
             val namesParam = names.joinToString(",")
-            return "print/$templateId/$omoteGaki/$namesParam/" +
-                "$fontSetId/$omoteGakiFontSize/$nameFontSize/$paperSize"
+            return "print/${Uri.encode(templateId)}/${Uri.encode(omoteGaki)}/${Uri.encode(namesParam)}/" +
+                "${Uri.encode(fontSetId)}/$omoteGakiFontSize/$nameFontSize/${Uri.encode(paperSize)}"
         }
     }
-    data object Result : NoshiRoute("result")
     data object MannersGuide : NoshiRoute("mannersGuide")
     data object History : NoshiRoute("history")
     data object HistoryDetail : NoshiRoute("historyDetail/{paperId}") {
-        fun createRoute(paperId: String) = "historyDetail/$paperId"
+        fun createRoute(paperId: String) = "historyDetail/${Uri.encode(paperId)}"
     }
     data object Settings : NoshiRoute("settings")
 }

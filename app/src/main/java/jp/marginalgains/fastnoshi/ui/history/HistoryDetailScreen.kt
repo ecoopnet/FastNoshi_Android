@@ -20,7 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.marginalgains.fastnoshi.domain.model.NoshiFontSet
 import jp.marginalgains.fastnoshi.domain.model.NoshiPaper
@@ -88,9 +88,9 @@ private fun HistoryDetailContent(paper: NoshiPaper) {
                 DetailRow(label = "用紙サイズ", value = paper.paperSize)
                 HorizontalDivider()
                 DetailRow(label = "作成日時", value = formatDateTime(paper.createdAt))
-                if (paper.lastPrintedAt != null) {
+                paper.lastPrintedAt?.let { printedAt ->
                     HorizontalDivider()
-                    DetailRow(label = "印刷日時", value = formatDateTime(paper.lastPrintedAt!!))
+                    DetailRow(label = "印刷日時", value = formatDateTime(printedAt))
                 }
             }
         }

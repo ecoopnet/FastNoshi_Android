@@ -1,10 +1,6 @@
 package jp.marginalgains.fastnoshi.ui.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -159,9 +155,6 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
                 onBackClick = { navController.popBackStack() }
             )
         }
-        composable(NoshiRoute.Result.route) {
-            PlaceholderScreen("結果")
-        }
         composable(NoshiRoute.MannersGuide.route) {
             MannersGuideScreen(onBackClick = { navController.popBackStack() })
         }
@@ -184,12 +177,5 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
         composable(NoshiRoute.Settings.route) {
             SettingsScreen(onBackClick = { navController.popBackStack() })
         }
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(name: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = name)
     }
 }

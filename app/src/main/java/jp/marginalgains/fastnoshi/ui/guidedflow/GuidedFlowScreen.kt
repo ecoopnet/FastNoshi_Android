@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MedicalInformation
 import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -31,7 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import jp.marginalgains.fastnoshi.domain.model.GuidedFlowStep
 import jp.marginalgains.fastnoshi.ui.components.NoshiChoiceButton
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
@@ -98,7 +99,7 @@ fun GuidedFlowScreen(
                         verticalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingXL)
                     ) {
                         // 質問アイコン
-                        androidx.compose.material3.Icon(
+                        Icon(
                             imageVector = stepIcon(step),
                             contentDescription = null,
                             modifier = Modifier.size(48.dp),

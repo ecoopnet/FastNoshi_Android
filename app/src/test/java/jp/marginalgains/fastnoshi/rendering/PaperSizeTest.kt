@@ -45,6 +45,17 @@ class PaperSizeTest {
         assertEquals(null, PaperSize.fromString("B5"))
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "A4, 0",
+        "A3, 1",
+        "B4, 3"
+    )
+    fun `NPS APIコード値が正しい`(name: String, expectedCode: String) {
+        val size = PaperSize.valueOf(name)
+        assertEquals(expectedCode, size.npsCode)
+    }
+
     @Test
     fun `landscapeでwidthがheightより大きい`() {
         PaperSize.entries.forEach { size ->
