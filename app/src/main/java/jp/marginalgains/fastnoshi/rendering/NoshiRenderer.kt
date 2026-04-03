@@ -94,13 +94,26 @@ class NoshiRenderer(
     }
 
     /**
-     * assetsからテンプレートPNG画像を読み込む
+     * assetsからテンプレートPNG画像を読み込む（画面密度に応じて高解像度版を選択）
      */
-    private fun loadTemplatePng(pngFileName: String): Bitmap? = try {
-        context.assets.open("templates/$pngFileName").use { inputStream ->
-            BitmapFactory.decodeStream(inputStream)
+    private fun loadTemplatePng(pngFileName: String): Bitmap? {
+        val density = context.resources.displayMetrics.density
+        val baseName = pngFileName.removeSuffix(".png")
+        val suffix = when {
+            density >= 3.0f -> "@3x"
+            density >= 2.0f -> "@2x"
+            else -> ""
         }
-    } catch (_: Exception) {
-        null
+        val candidates = listOf("${baseName}${suffix}.png", pngFileName)
+        for (candidate in candidates) {
+            try {
+                return context.assets.open("templates/$candidate").use { inputStream ->
+                    BitmapFactory.decodeStream(inputStream)
+                }
+            } catch (_: Exception) {
+                continue
+            }
+        }
+        return null
     }
 }
