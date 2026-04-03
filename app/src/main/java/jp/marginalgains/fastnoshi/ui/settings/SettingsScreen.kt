@@ -9,37 +9,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LocalPrintshop
+import androidx.compose.material.icons.outlined.PrivacyTip
+import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.marginalgains.fastnoshi.BuildConfig
-import jp.marginalgains.fastnoshi.domain.model.NoshiFontSet
 import jp.marginalgains.fastnoshi.ui.components.NoshiTopBar
 import jp.marginalgains.fastnoshi.ui.theme.NoshiSpacing
 
 @Composable
 fun SettingsScreen(
     onBackClick: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
+    onNavigateToPrintGuide: () -> Unit = {},
+    onNavigateToPrintInfo: () -> Unit = {}
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         topBar = {
-            NoshiTopBar(title = "設定", onBackClick = onBackClick)
+            NoshiTopBar(title = "使い方・設定", onBackClick = onBackClick)
         }
     ) { padding ->
         Column(
@@ -52,30 +60,72 @@ fun SettingsScreen(
         ) {
             Spacer(modifier = Modifier.height(NoshiSpacing.spacingSM))
 
-            SettingsSection(title = "デフォルトフォント") {
-                NoshiFontSet.all.forEach { font ->
-                    RadioRow(
-                        text = font.displayName,
-                        selected = uiState.defaultFontId == font.id,
-                        onClick = { viewModel.updateDefaultFont(font.id) }
-                    )
-                }
+            SettingsSection(title = "印刷方法") {
+                SettingsRow(
+                    icon = Icons.Outlined.LocalPrintshop,
+                    text = "セブン‐イレブンでの印刷方法",
+                    onClick = onNavigateToPrintGuide
+                )
             }
 
-            SettingsSection(title = "デフォルト用紙サイズ") {
-                listOf("A4", "B4", "A3").forEach { size ->
-                    RadioRow(
-                        text = size,
-                        selected = uiState.defaultPaperSize == size,
-                        onClick = { viewModel.updateDefaultPaperSize(size) }
-                    )
-                }
+            SettingsSection(title = "印刷について") {
+                SettingsRow(
+                    icon = Icons.Outlined.Store,
+                    text = "対応コンビニ・料金",
+                    onClick = onNavigateToPrintInfo
+                )
+                HorizontalDivider(modifier = Modifier.padding(horizontal = NoshiSpacing.spacingSM))
+                SettingsRow(
+                    icon = Icons.Outlined.Info,
+                    text = "ネットプリントからのお知らせ",
+                    onClick = {
+                        uriHandler.openUri("https://www.printing.ne.jp/cgi-bin/fb/m_ad/msg.cgi")
+                    }
+                )
+                HorizontalDivider(modifier = Modifier.padding(horizontal = NoshiSpacing.spacingSM))
+                SettingsRow(
+                    icon = Icons.Outlined.Description,
+                    text = "ネットプリント利用規約",
+                    onClick = {
+                        uriHandler.openUri("https://www.printing.ne.jp/support/bp/eula_bp.html")
+                    }
+                )
             }
 
-            SettingsSection(title = "アプリ情報") {
+            SettingsSection(title = "サポート") {
+                SettingsRow(
+                    icon = Icons.Outlined.Email,
+                    text = "お問い合わせ",
+                    onClick = {
+                        uriHandler.openUri(
+                            "https://docs.google.com/forms/d/e/" +
+                                "1FAIpQLScyI2EONzFEEWhxKhg4sR90Z__hZ5sgFbLeLLquExzsCmbosA" +
+                                "/viewform?usp=dialog"
+                        )
+                    }
+                )
+            }
+
+            SettingsSection(title = "アプリについて") {
                 InfoRow(label = "バージョン", value = BuildConfig.VERSION_NAME)
-                HorizontalDivider()
-                InfoRow(label = "ビルド", value = BuildConfig.VERSION_CODE.toString())
+                HorizontalDivider(modifier = Modifier.padding(horizontal = NoshiSpacing.spacingSM))
+                SettingsRow(
+                    icon = Icons.Outlined.PrivacyTip,
+                    text = "プライバシーポリシー",
+                    onClick = {
+                        uriHandler.openUri("https://marginalgains.github.io/privacy-policy.html")
+                    }
+                )
+                HorizontalDivider(modifier = Modifier.padding(horizontal = NoshiSpacing.spacingSM))
+                SettingsRow(
+                    icon = Icons.Outlined.Description,
+                    text = "利用規約",
+                    onClick = {
+                        uriHandler.openUri(
+                            "https://marginalgains.github.io/10min-noshi/term-of-services.html"
+                        )
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(NoshiSpacing.spacingMD))
@@ -102,7 +152,7 @@ private fun SettingsSection(
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
         ) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(vertical = NoshiSpacing.spacingXS)) {
                 content()
             }
         }
@@ -110,19 +160,28 @@ private fun SettingsSection(
 }
 
 @Composable
-private fun RadioRow(text: String, selected: Boolean, onClick: () -> Unit) {
+private fun SettingsRow(
+    icon: ImageVector,
+    text: String,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 12.dp, horizontal = NoshiSpacing.spacingMD),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(NoshiSpacing.spacingSM)
     ) {
-        RadioButton(selected = selected, onClick = onClick)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = 8.dp)
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
@@ -132,7 +191,7 @@ private fun InfoRow(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 8.dp),
+            .padding(vertical = 12.dp, horizontal = NoshiSpacing.spacingMD),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(

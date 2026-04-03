@@ -17,6 +17,8 @@ import jp.marginalgains.fastnoshi.ui.home.HomeScreen
 import jp.marginalgains.fastnoshi.ui.input.TextInputScreen
 import jp.marginalgains.fastnoshi.ui.preview.PreviewScreen
 import jp.marginalgains.fastnoshi.ui.print.PrintScreen
+import jp.marginalgains.fastnoshi.ui.settings.PrintInfoScreen
+import jp.marginalgains.fastnoshi.ui.settings.SevenElevenPrintGuideScreen
 import jp.marginalgains.fastnoshi.ui.settings.SettingsScreen
 
 @Composable
@@ -175,7 +177,21 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
             HistoryDetailScreen(onBackClick = { navController.popBackStack() })
         }
         composable(NoshiRoute.Settings.route) {
-            SettingsScreen(onBackClick = { navController.popBackStack() })
+            SettingsScreen(
+                onBackClick = { navController.popBackStack() },
+                onNavigateToPrintGuide = {
+                    navController.navigate(NoshiRoute.PrintGuide.route)
+                },
+                onNavigateToPrintInfo = {
+                    navController.navigate(NoshiRoute.PrintInfo.route)
+                }
+            )
+        }
+        composable(NoshiRoute.PrintGuide.route) {
+            SevenElevenPrintGuideScreen(onBackClick = { navController.popBackStack() })
+        }
+        composable(NoshiRoute.PrintInfo.route) {
+            PrintInfoScreen(onBackClick = { navController.popBackStack() })
         }
     }
 }

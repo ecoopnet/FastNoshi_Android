@@ -42,4 +42,6 @@ sealed class NoshiRoute(val route: String) {
         fun createRoute(paperId: String) = "historyDetail/${Uri.encode(paperId)}"
     }
     data object Settings : NoshiRoute("settings")
+    data object PrintGuide : NoshiRoute("printGuide")
+    data object PrintInfo : NoshiRoute("printInfo")
 }

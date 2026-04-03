@@ -12,6 +12,22 @@ import org.junit.jupiter.api.Test
 
 class NoshiRouteTest {
 
+    private val allRoutes = listOf(
+        NoshiRoute.Home,
+        NoshiRoute.GuidedFlow,
+        NoshiRoute.Expert,
+        NoshiRoute.ExpertOmoteGaki,
+        NoshiRoute.TextInput,
+        NoshiRoute.Preview,
+        NoshiRoute.Print,
+        NoshiRoute.MannersGuide,
+        NoshiRoute.History,
+        NoshiRoute.HistoryDetail,
+        NoshiRoute.Settings,
+        NoshiRoute.PrintGuide,
+        NoshiRoute.PrintInfo
+    )
+
     @BeforeEach
     fun setUp() {
         mockkStatic(Uri::class)
@@ -25,39 +41,13 @@ class NoshiRouteTest {
 
     @Test
     fun `全ルートが一意である`() {
-        val routes = listOf(
-            NoshiRoute.Home,
-            NoshiRoute.GuidedFlow,
-            NoshiRoute.Expert,
-            NoshiRoute.ExpertOmoteGaki,
-            NoshiRoute.TextInput,
-            NoshiRoute.Preview,
-            NoshiRoute.Print,
-            NoshiRoute.MannersGuide,
-            NoshiRoute.History,
-            NoshiRoute.HistoryDetail,
-            NoshiRoute.Settings
-        )
-        val routeStrings = routes.map { it.route }
+        val routeStrings = allRoutes.map { it.route }
         assertEquals(routeStrings.size, routeStrings.toSet().size)
     }
 
     @Test
-    fun `全画面分のルートが11個定義されている`() {
-        val routes = listOf(
-            NoshiRoute.Home,
-            NoshiRoute.GuidedFlow,
-            NoshiRoute.Expert,
-            NoshiRoute.ExpertOmoteGaki,
-            NoshiRoute.TextInput,
-            NoshiRoute.Preview,
-            NoshiRoute.Print,
-            NoshiRoute.MannersGuide,
-            NoshiRoute.History,
-            NoshiRoute.HistoryDetail,
-            NoshiRoute.Settings
-        )
-        assertEquals(11, routes.size)
+    fun `全画面分のルートが13個定義されている`() {
+        assertEquals(13, allRoutes.size)
     }
 
     @Test
@@ -87,5 +77,15 @@ class NoshiRouteTest {
     @Test
     fun `Homeがスタート画面である`() {
         assertEquals("home", NoshiRoute.Home.route)
+    }
+
+    @Test
+    fun `PrintGuideのルートが正しい`() {
+        assertEquals("printGuide", NoshiRoute.PrintGuide.route)
+    }
+
+    @Test
+    fun `PrintInfoのルートが正しい`() {
+        assertEquals("printInfo", NoshiRoute.PrintInfo.route)
     }
 }
