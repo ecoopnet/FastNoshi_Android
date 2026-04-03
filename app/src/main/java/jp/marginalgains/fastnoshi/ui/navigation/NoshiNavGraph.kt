@@ -11,8 +11,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import jp.marginalgains.fastnoshi.ui.guide.MannersGuideScreen
 import jp.marginalgains.fastnoshi.ui.guidedflow.GuidedFlowScreen
+import jp.marginalgains.fastnoshi.ui.history.HistoryDetailScreen
+import jp.marginalgains.fastnoshi.ui.history.HistoryScreen
 import jp.marginalgains.fastnoshi.ui.home.HomeScreen
+import jp.marginalgains.fastnoshi.ui.settings.SettingsScreen
 
 @Composable
 fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -70,10 +74,15 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
             PlaceholderScreen("結果")
         }
         composable(NoshiRoute.MannersGuide.route) {
-            PlaceholderScreen("マナーガイド")
+            MannersGuideScreen(onBackClick = { navController.popBackStack() })
         }
         composable(NoshiRoute.History.route) {
-            PlaceholderScreen("履歴")
+            HistoryScreen(
+                onPaperClick = { paperId ->
+                    navController.navigate(NoshiRoute.HistoryDetail.createRoute(paperId))
+                },
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(
             route = NoshiRoute.HistoryDetail.route,
@@ -81,10 +90,10 @@ fun NoshiNavGraph(navController: NavHostController, modifier: Modifier = Modifie
                 navArgument("paperId") { type = NavType.StringType }
             )
         ) {
-            PlaceholderScreen("履歴詳細")
+            HistoryDetailScreen(onBackClick = { navController.popBackStack() })
         }
         composable(NoshiRoute.Settings.route) {
-            PlaceholderScreen("設定")
+            SettingsScreen(onBackClick = { navController.popBackStack() })
         }
     }
 }
