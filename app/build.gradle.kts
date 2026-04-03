@@ -131,6 +131,7 @@ dependencies {
     testRuntimeOnly(libs.junit5.launcher)
     testImplementation(libs.junit5.params)
     testImplementation(libs.mockk)
+    testImplementation(libs.mockwebserver)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.hilt.android.testing)
